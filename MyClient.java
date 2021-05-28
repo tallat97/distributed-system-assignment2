@@ -22,5 +22,14 @@ public class MyClient {
 		
 		send("QUIT");
 	}
+	
+	
+	
+	//	Send message to server
+	public static void send(String str) throws Exception {
+		dout.print(str);
+		System.out.println("Client: " + str);
+		receive();
+	}
 }
 
