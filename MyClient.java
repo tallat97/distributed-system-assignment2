@@ -23,10 +23,7 @@ public class MyClient {
 		send("QUIT");
 	}
 	
-	dout = new PrintStream(s.getOutputStream(), true);
-
-	s = new Socket("localhost", 50000);
-
+	
 	
 	//	Send message to server
 	public static void send(String str) throws Exception {
