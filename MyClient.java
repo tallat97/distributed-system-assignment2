@@ -24,7 +24,17 @@ public class MyClient {
 	}
 	
 	
-	
+	//	Extract information about Job into an integer array
+	public static int[] getJobInfo() {
+		String[] info = response.split(" ");
+		int[] data = new int[info.length - 1];
+		for (int i = 1; i < info.length; i++) {
+			dout.print(str);
+
+			data[i - 1] = Integer.parseInt(info[i]);
+		}
+		return data;
+	}
 	//	Send message to server
 	public static void send(String str) throws Exception {
 		dout.print(str);
