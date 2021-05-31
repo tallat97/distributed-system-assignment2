@@ -3,55 +3,57 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 public class MyClient {
 
-	static DataInputStream din;
-	static PrintStream dout;
-	static Socket s;
-	
 	static String response;
 	static int nRec = 0, nLen = 0;
+
+	static DataInputStream inputStream;
+	static PrintStream outputStream;
+	static Socket s;
+	
 	
 	static String largest=" ";
 	
 	public static void main(String[] args) throws Exception {
 		s = new Socket("localhost", 50000);
-		din = new DataInputStream(s.getInputStream());
-		dout = new PrintStream(s.getOutputStream(), true);
-		send("HELO");
-		send("AUTH " + System.getProperty("user.name"));
-		send("REDY");
+		outputStream = new PrintStream(s.getOutputStream(), true);
+		inputStream = new DataInputStream(s.getInputStream());
+		sendFun("HELO");
+		sendFun("AUTH " + System.getProperty("user.name"));
+		sendFun("REDY");
 		while (!(response.equals("NONE"))) {
 			if (!(response.startsWith("JOBN") || response.startsWith("JOBP"))) {
 				if (response.startsWith("JCPL")) {
-					send("REDY");
+					sendFun("REDY");
 				}
 				continue;
 			}
 			int[] data = getJobInfo();
 			if(largest.equals(" ")){
-				largest=findLargest();
+				largest=findLargestFun();
 			}
-			send("SCHD "+data[1]+" " + largest);
-			send("REDY");
+			sendFun("SCHD "+data[1]+" " + largest);
+			sendFun("REDY");
 		}
-		send("QUIT");
 		
-		din.close();
-		dout.close();
+		sendFun("QUIT");
+		outputStream.close();
+		inputStream.close();
 		s.close();
 	}
-	public static String findLargest() throws Exception{
-		send("GETS All");
+	
+	public static String findLargestFun() throws Exception{
+		sendFun("GETS All");
 		String temp=response;
 		String[] data=temp.split(" ");
 		nRec = Integer.parseInt(data[1]);
 		nLen = Integer.parseInt(data[2]);
-		send("OK");
+		sendFun("OK");
 		temp = response;
-		send("OK");
-		String[] servers = temp.split("\n");
+		sendFun("OK");
+		String[] serv = temp.split("\n");
 		String name="";
 		int disk_size=0;
-		for(String i : servers) {
+		for(String i : serv) {
 			String[] j=i.split(" ");
 			String n = j[0];
 			int ds = Integer.parseInt(j[4].trim());
@@ -63,7 +65,6 @@ public class MyClient {
 		return name+" 0";
 	}
 	
-	//	Extract information about Job into an integer array
 	public static int[] getJobInfo() {
 		String[] info = response.split(" ");
 		int[] data = new int[info.length - 1];
@@ -72,20 +73,18 @@ public class MyClient {
 		}
 		return data;
 	}
-	//	Send message to server
-	public static void send(String str) throws Exception {
-		dout.print(str+"\n");
-		dout.flush();
-		System.out.println("Client: " + str);
-		receive();
+	
+	public static void sendFun(String str) throws Exception {
+		outputStream.print(str+"\n");
+		outputStream.flush();
+		receiveFun();
 	}
-	//	Read message from server
-	public static void receive() throws Exception {
+	
+	public static void receiveFun() throws Exception {
 		int SIZE = Math.max(1000, nRec * nLen + 1);
 		byte[] bytes = new byte[SIZE];
-		din.read(bytes);
+		inputStream.read(bytes);
 		String str = new String(bytes, StandardCharsets.UTF_8);
-		System.out.println("Server: "+str);
 		response = str.trim();
 	}
 }
