@@ -22,7 +22,29 @@ public class MyClient {
 		
 		send("QUIT");
 	}
-	
+	public static String findLargest() throws Exception{
+		send("GETS All");
+		String temp=response;
+		String[] data=temp.split(" ");
+		nRec = Integer.parseInt(data[1]);
+		nLen = Integer.parseInt(data[2]);
+		send("OK");
+		temp = response;
+		send("OK");
+		String[] servers = temp.split("\n");
+		String name="";
+		int disk_size=0;
+		for(String i : servers) {
+			String[] j=i.split(" ");
+			String n = j[0];
+			int ds = Integer.parseInt(j[4].trim());
+			if(ds>disk_size) {
+				name = n;
+				disk_size=ds;
+			}
+		}
+		return name+" 0";
+	}
 	
 	//	Extract information about Job into an integer array
 	public static int[] getJobInfo() {
