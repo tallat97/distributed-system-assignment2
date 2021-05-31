@@ -40,5 +40,14 @@ public class MyClient {
 		System.out.println("Client: " + str);
 		receive();
 	}
+	//	Read message from server
+	public static void receive() throws Exception {
+		int SIZE = Math.max(1000, nRec * nLen + 1);
+		byte[] bytes = new byte[SIZE];
+		din.read(bytes);
+		String str = new String(bytes, StandardCharsets.UTF_8);
+		System.out.println("Server: "+str);
+		response = str;
+	}
 }
 
