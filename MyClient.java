@@ -35,7 +35,7 @@ public class MyClient {
 	}
 	//	Send message to server
 	public static void send(String str) throws Exception {
-		dout.print(str);
+		dout.print(str+"\n");
 		dout.flush();
 		System.out.println("Client: " + str);
 		receive();
