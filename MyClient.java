@@ -21,6 +21,10 @@ public class MyClient {
 		send("REDY");
 		
 		send("QUIT");
+		
+		din.close();
+		dout.close();
+		s.close();
 	}
 	public static String findLargest() throws Exception{
 		send("GETS All");
